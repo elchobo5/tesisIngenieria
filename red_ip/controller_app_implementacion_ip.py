@@ -1,7 +1,7 @@
 '''
 Created on Feb 26, 2015
 
-@author: efviodo,mduarte v3
+@author: efviodo,mduarte v4
 '''
 
 import json
@@ -492,6 +492,13 @@ class GUIServerApp(app_manager.RyuApp):
 
 				#agrego el flujo
 				self.add_flow(datapath, 100, match, actions, 30)
+			elif ((ip_src in self.origins) and (tcp_src in self.origins[ip_src]) and ('tcp' in self.origins[ip_src][tcp_src])):
+					actions = [parser.OFPActionOutput(int(self.borderSwitches[dpid]))]
+					out = parser.OFPPacketOut(datapath=datapath,
+								  buffer_id=ofproto.OFP_NO_BUFFER,
+								  in_port=in_port, actions=actions,
+								  data=msg.data)
+					datapath.send_msg(out)
 		    	else:
 				#descartar paquete
 				self.logger.info("Se descarta paquete")
@@ -514,6 +521,13 @@ class GUIServerApp(app_manager.RyuApp):
 
 				#agrego el flujo
 			    	self.add_flow(datapath, 100, match, actions, 30)
+			elif ((ip_src in self.origins) and (udp_src in self.origins[ip_src]) and ('udp' in self.origins[ip_src][udp_src])):
+					actions = [parser.OFPActionOutput(int(self.borderSwitches[dpid]))]
+					out = parser.OFPPacketOut(datapath=datapath,
+								  buffer_id=ofproto.OFP_NO_BUFFER,
+								  in_port=in_port, actions=actions,
+								  data=msg.data)
+					datapath.send_msg(out)
 			else:
 				#descartar paquete
 				self.logger.info("Se descarta paquete")
