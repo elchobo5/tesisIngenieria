@@ -274,7 +274,7 @@ class GUIServerApp(app_manager.RyuApp):
         print str(datapath.id) + ' is connected'
 
 	if (dpid in self.borderSwitches):
-		in_port = self.borderSwitches[dpid]
+		in_port = int(self.borderSwitches[dpid])
 		out_port = int(int(in_port) * 2)
 		match = parser.OFPMatch(in_port=out_port)
 		actions = [parser.OFPActionOutput(in_port)]
@@ -283,10 +283,10 @@ class GUIServerApp(app_manager.RyuApp):
 		
 		#Flujos para bgp
 		bgpPort = "179"
-		match = parser.OFPMatch(eth_type=ether.ETH_TYPE_IP,tcp_dst=int(bgpPort),ip_proto=6,in_port=int(in_port))
+		match = parser.OFPMatch(eth_type=ether.ETH_TYPE_IP,tcp_dst=int(bgpPort),ip_proto=6,in_port=in_port)
 		actions = [parser.OFPActionOutput(out_port)]
 		self.add_flow(datapath, 0, match, actions)
-		match = parser.OFPMatch(eth_type=ether.ETH_TYPE_IP,tcp_src=int(bgpPort),ip_proto=6,in_port=int(in_port))
+		match = parser.OFPMatch(eth_type=ether.ETH_TYPE_IP,tcp_src=int(bgpPort),ip_proto=6,in_port=in_port)
 		actions = [parser.OFPActionOutput(out_port)]
 		self.add_flow(datapath, 0, match, actions)
 		
