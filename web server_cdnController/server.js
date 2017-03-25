@@ -39,29 +39,33 @@ app.post('/addOrigin', function (req, res) {
 		if (!error && response.statusCode == 200) {
 			console.log(body);
 			res.writeHead(200, {"Content-Type": "application/json"});
+			if (body.Result == true) {
+				var insertDocument = function(db, callback) {
+					db.collection('origins').insertOne( {
+						"ip": ipOrigin,
+						"port": portOrigin,
+						"transport": transport,
+						"surrogates": []
+					}, function(err, result) {
+						assert.equal(err, null);
+						console.log("Inserted a document into the origins collection.");
+						callback();
+					});
+				};
+
+				MongoClient.connect(url, function(err, db) {
+					assert.equal(null, err);
+					insertDocument(db, function() {
+					db.close();
+					});
+				});
+			}
 			res.end(JSON.stringify(body));
 		}
-	});
-	var insertDocument = function(db, callback) {
-		db.collection('origins').insertOne( {
-			"ip": ipOrigin,
-			"port": portOrigin,
-			"transport": transport,
-			"surrogates": []
-		}, function(err, result) {
-			assert.equal(err, null);
-			console.log("Inserted a document into the origins collection.");
-			callback();
-		});
-	};
-
-	MongoClient.connect(url, function(err, db) {
-		assert.equal(null, err);
-		insertDocument(db, function() {
-		db.close();
-		});
-	});
-			
+		else {
+			res.sendStatus(500);
+		}
+	});		
 	//res.sendStatus(200);
 });
 

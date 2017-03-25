@@ -635,7 +635,7 @@ class GUIServerController(ControllerBase):
         data = getHTTPBody(req)
 	
         if data == "":
-            body = json.dumps({'Result': 'false'}, 2)
+            body = json.dumps({'Result': False}, 2)
             return Response(content_type='json', body=body, status=200)
 	dataObject = json.loads(data)
 	ipToadd = dataObject['ipOrigin']
@@ -653,7 +653,7 @@ class GUIServerController(ControllerBase):
 			if (transportToadd not in self.mainapp.origins[ipToadd][int(portToadd)]):
 				self.mainapp.origins[ipToadd][int(portToadd)][transportToadd] = []
 			else:
-				body = json.dumps({'Result': 'false'}, 2)
+				body = json.dumps({'Result': False}, 2)
             			return Response(content_type='json', body=body, status=200)
 	if ((int(portToadd) not in self.mainapp.all_tcpports) or (transportToadd not in self.mainapp.all_tcpports[int(portToadd)])):
 		if (int(portToadd) not in self.mainapp.all_tcpports):		
@@ -671,7 +671,7 @@ class GUIServerController(ControllerBase):
 
 				r = requests.post('http://localhost:8080/stats/flowentry/add', data = json.dumps({"dpid":int(dpid),"table_id":0,"priority":1,"match":{"eth_type":ether.ETH_TYPE_IP,"udp_src":int(portToadd),"ip_proto":17,"in_port":int(int(self.mainapp.borderSwitches[dpid]) * 2)},"actions":[{"type":"OUTPUT","port":ofproto_v1_3.OFPP_CONTROLLER}]}))
         try:    
-            body = json.dumps({'Result': 'true'}, 2)
+            body = json.dumps({'Result': True}, 2)
             return Response(content_type='json', body=body, status=200)
         except Exception as e:
             return Response(status=500)
@@ -685,7 +685,7 @@ class GUIServerController(ControllerBase):
         data = getHTTPBody(req)
 	
         if data == "":
-            body = json.dumps({'Result': 'false'}, 2)
+            body = json.dumps({'Result': False}, 2)
             return Response(content_type='json', body=body, status=200)
 	dataObject = json.loads(data)
         ipSurrogate = dataObject['ipSurrogate']
@@ -717,10 +717,10 @@ class GUIServerController(ControllerBase):
 					r = requests.post('http://localhost:8080/stats/flowentry/add', data = json.dumps({"dpid":int(dpid),"table_id":0,"priority":1,"match":{"eth_type":ether.ETH_TYPE_IP,"udp_src":int(portSurrogate),"ip_proto":17,"in_port":int(int(self.mainapp.borderSwitches[dpid]) * 2)},"actions":[{"type":"OUTPUT","port":ofproto_v1_3.OFPP_CONTROLLER}]}))
 
 	else:
-		body = json.dumps({'Result': 'false'}, 2)
+		body = json.dumps({'Result': False}, 2)
         	return Response(content_type='json', body=body, status=200)
 	try:    
-            body = json.dumps({'Result': 'true'}, 2)
+            body = json.dumps({'Result': True}, 2)
             return Response(content_type='json', body=body, status=200)
         except Exception as e:
             return Response(status=500)
@@ -734,20 +734,20 @@ class GUIServerController(ControllerBase):
         data = getHTTPBody(req)
 	
         if data == "":
-            body = json.dumps({'Result': 'false'}, 2)
+            body = json.dumps({'Result': False}, 2)
             return Response(content_type='json', body=body, status=200)
 	dataObject = json.loads(data)
 	ipTodelete = dataObject['ipOrigin']
 	portTodelete = dataObject['portOrigin']
 	transportTodelete = dataObject['transport']
 	if (ipTodelete not in self.mainapp.origins or portTodelete not in self.mainapp.origins[ipTodelete] or transportTodelete not in self.mainapp.origins[ipTodelete][portTodelete]):
-		body = json.dumps({'Result': 'false'}, 2)
+		body = json.dumps({'Result': False}, 2)
             	return Response(content_type='json', body=body, status=200)
 	else:
 		del self.mainapp.origins[ipTodelete][portTodelete][transportTodelete]
 		
         try:    
-            body = json.dumps({'Result': 'true'}, 2)
+            body = json.dumps({'Result': True}, 2)
             return Response(content_type='json', body=body, status=200)
         except Exception as e:
             return Response(status=500)
@@ -761,7 +761,7 @@ class GUIServerController(ControllerBase):
         data = getHTTPBody(req)
 	
         if data == "":
-            body = json.dumps({'Result': 'false'}, 2)
+            body = json.dumps({'Result': False}, 2)
             return Response(content_type='json', body=body, status=200)
 	dataObject = json.loads(data)
 	ipOrigin = dataObject['ipOrigin']
@@ -770,10 +770,10 @@ class GUIServerController(ControllerBase):
 	portSurrogate = dataObject['portSurrogate']
 	transport = dataObject['transport']
 	if (ipSurrogate not in self.mainapp.surrogates or portSurrogate not in self.mainapp.surrogates[ipSurrogate] or transport not in self.mainapp.surrogates[ipSurrogate][portSurrogate]):
-		body = json.dumps({'Result': 'false'}, 2)
+		body = json.dumps({'Result': False}, 2)
             	return Response(content_type='json', body=body, status=200)
 	if (ipOrigin not in self.mainapp.origins or portOrigin not in self.mainapp.origins[ipOrigin] or transport not in self.mainapp.origins[ipOrigin][portOrigin]):
-		body = json.dumps({'Result': 'false'}, 2)
+		body = json.dumps({'Result': False}, 2)
             	return Response(content_type='json', body=body, status=200)
 	del self.mainapp.surrogates[ipSurrogate][portSurrogate][transport]
 	w = 0
@@ -782,7 +782,7 @@ class GUIServerController(ControllerBase):
 			del self.mainapp.origins[ipOrigin][portOrigin][transport][w]
 		w = w + 1
         try:    
-            body = json.dumps({'Result': 'true'}, 2)
+            body = json.dumps({'Result': True}, 2)
             return Response(content_type='json', body=body, status=200)
         except Exception as e:
             return Response(status=500)
