@@ -1,0 +1,9 @@
+db.borderSwitches.insert(
+{
+    switches:
+    [
+        {dpid:1, mac:"00:00:00:00:00:01"},
+        {dpid:2, mac:"00:00:00:00:00:02"},
+	{dpid:3, mac:"00:00:00:00:00:03"}
+    ]
+})
