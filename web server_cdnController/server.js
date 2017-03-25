@@ -38,6 +38,8 @@ app.post('/addOrigin', function (req, res) {
 	request(options, function (error, response, body) {
 		if (!error && response.statusCode == 200) {
 			console.log(body);
+			res.writeHead(200, {"Content-Type": "application/json"});
+			res.end(JSON.stringify(body));
 		}
 	});
 	var insertDocument = function(db, callback) {
@@ -60,7 +62,7 @@ app.post('/addOrigin', function (req, res) {
 		});
 	});
 			
-	res.sendStatus(200);
+	//res.sendStatus(200);
 });
 
 app.post('/deleteOrigin', function (req, res) {
