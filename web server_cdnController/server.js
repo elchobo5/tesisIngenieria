@@ -73,7 +73,45 @@ app.post('/deleteOrigin', function (req, res) {
 	var ipOrigin = req.body.ipOrigin;
 	var portOrigin = req.body.portOrigin;
 	var transport = req.body.transport;
-	res.sendStatus(200);
+	var options = {
+		uri: 'http://192.168.56.101:8080/deleteOrigin',
+		method: 'POST',
+		json: {
+			"ipOrigin": ipOrigin,
+			"portOrigin": portOrigin,
+			"transport": transport
+		}
+	};
+	request(options, function (error, response, body) {
+		if (!error && response.statusCode == 200) {
+			console.log(body);
+			res.writeHead(200, {"Content-Type": "application/json"});
+			if (body.Result == true) {
+				var removeDocument = function(db, callback) {
+					db.collection('origins').remove( {
+						"ip": ipOrigin,
+						"port": portOrigin,
+						"transport": transport
+					}, function(err, result) {
+						assert.equal(err, null);
+						console.log("Inserted a document into the origins collection.");
+						callback();
+					});
+				};
+
+				MongoClient.connect(url, function(err, db) {
+					assert.equal(null, err);
+					removeDocument(db, function() {
+					db.close();
+					});
+				});
+			}
+			res.end(JSON.stringify(body));
+		}
+		else {
+			res.sendStatus(500);
+		}
+	});		
 });
 
 app.post('/addSurrogate', function (req, res) {
@@ -82,7 +120,64 @@ app.post('/addSurrogate', function (req, res) {
 	var transport = req.body.transport;
 	var ipSurrogate = req.body.ipSurrogate;
 	var portSurrogate = req.body.portSurrogate;
-	res.sendStatus(200);
+	var options = {
+		uri: 'http://192.168.56.101:8080/addSurrogate',
+		method: 'POST',
+		json: {
+			"ipOrigin": ipOrigin,
+			"portOrigin": portOrigin,
+			"transport": transport,
+			"ipSurrogate": ipSurrogate,
+			"portSurrogate": portSurrogate
+		}
+	};
+	request(options, function (error, response, body) {
+		if (!error && response.statusCode == 200) {
+			console.log(body);
+			res.writeHead(200, {"Content-Type": "application/json"});
+			if (body.Result == true) {
+				var surrogates = [];
+				var findDocument = function(db, callback) {
+					db.collection('origins').findOne( {
+						"ip": ipOrigin,
+						"port": portOrigin,
+						"transport": transport	
+					}, function(err, result) {
+						assert.equal(err, null);
+						surrogates = result.surrogates;
+						callback();
+					});
+				};
+				var updateDocument = function(db, callback) {
+					db.collection('origins').update( {
+						"ip": ipOrigin,
+						"port": portOrigin,
+						"transport": transport
+					},{$set: {"surrogates":surrogates}	
+					}, function(err, result) {
+						assert.equal(err, null);
+						console.log("Inserted a document into the origins collection.");
+						callback();
+					});
+				};
+
+				MongoClient.connect(url, function(err, db) {
+					assert.equal(null, err);
+					findDocument(db, function() {
+						surrogates.push({"ip": ipSurrogate, "port": portSurrogate});
+						console.log(surrogates);
+						updateDocument(db, function() {
+							db.close();
+						});
+					});
+				});
+			}
+			res.end(JSON.stringify(body));
+		}
+		else {
+			res.sendStatus(500);
+		}
+	});		
 });
 
 app.post('/deleteSurrogate', function (req, res) {
