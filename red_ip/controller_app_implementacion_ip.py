@@ -734,13 +734,16 @@ class GUIServerController(ControllerBase):
         data = getHTTPBody(req)
 	
         if data == "":
+	    print("no borra 1")
             body = json.dumps({'Result': False}, 2)
             return Response(content_type='json', body=body, status=200)
 	dataObject = json.loads(data)
 	ipTodelete = dataObject['ipOrigin']
 	portTodelete = dataObject['portOrigin']
 	transportTodelete = dataObject['transport']
+	print("data: %s, %s, %s",ipTodelete,portTodelete,transportTodelete)
 	if (ipTodelete not in self.mainapp.origins or portTodelete not in self.mainapp.origins[ipTodelete] or transportTodelete not in self.mainapp.origins[ipTodelete][portTodelete]):
+		print("no borra 2")
 		body = json.dumps({'Result': False}, 2)
             	return Response(content_type='json', body=body, status=200)
 	else:
