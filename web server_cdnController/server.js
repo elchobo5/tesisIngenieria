@@ -181,10 +181,76 @@ app.post('/addSurrogate', function (req, res) {
 });
 
 app.post('/deleteSurrogate', function (req, res) {
+	var ipOrigin = req.body.ipOrigin;
+	var portOrigin = req.body.portOrigin;
 	var transport = req.body.transport;
 	var ipSurrogate = req.body.ipSurrogate;
 	var portSurrogate = req.body.portSurrogate;
-	res.sendStatus(200);
+	var options = {
+		uri: 'http://192.168.56.101:8080/deleteSurrogate',
+		method: 'POST',
+		json: {
+			"ipOrigin": ipOrigin,
+			"portOrigin": portOrigin,
+			"transport": transport,
+			"ipSurrogate": ipSurrogate,
+			"portSurrogate": portSurrogate
+		}
+	};
+	request(options, function (error, response, body) {
+		if (!error && response.statusCode == 200) {
+			console.log(body);
+			res.writeHead(200, {"Content-Type": "application/json"});
+			if (body.Result == true) {
+				var surrogates = [];
+				var findDocument = function(db, callback) {
+					db.collection('origins').findOne( {
+						"ip": ipOrigin,
+						"port": portOrigin,
+						"transport": transport	
+					}, function(err, result) {
+						assert.equal(err, null);
+						surrogates = result.surrogates;
+						callback();
+					});
+				};
+				var updateDocument = function(db, callback) {
+					db.collection('origins').update( {
+						"ip": ipOrigin,
+						"port": portOrigin,
+						"transport": transport
+					},{$set: {"surrogates":surrogates}	
+					}, function(err, result) {
+						assert.equal(err, null);
+						console.log("Inserted a document into the origins collection.");
+						callback();
+					});
+				};
+
+				MongoClient.connect(url, function(err, db) {
+					assert.equal(null, err);
+					findDocument(db, function() {
+						//surrogates.push({"ip": ipSurrogate, "port": portSurrogate});
+						for (index = 0; index < surrogates.length; ++index) {
+    							//console.log(a[index]);
+							if ((surrogates[index].port == portSurrogate) && (surrogates[index].ip == ipSurrogate)) {
+								surrogates.splice(index, 1);
+								break;
+							}
+						}
+						console.log(surrogates);
+						updateDocument(db, function() {
+							db.close();
+						});
+					});
+				});
+			}
+			res.end(JSON.stringify(body));
+		}
+		else {
+			res.sendStatus(500);
+		}
+	});
 });
 
 app.listen(3000, function () {
