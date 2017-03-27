@@ -19,7 +19,23 @@ app.get('/', function (req, res) {
 });
 
 app.get('/cdn', function (req, res) {
-  	res.send('cdn');
+	var resultCDN = {};
+  	var findDocument = function(db, callback) {
+		db.collection('origins').find().toArray(function(err, result) {
+			assert.equal(err, null);
+			console.log(result)
+			resultCDN = result;
+			callback();
+		});
+	};
+	MongoClient.connect(url, function(err, db) {
+		assert.equal(null, err);
+		findDocument(db, function() {
+			db.close();
+			res.writeHead(200, {"Content-Type": "application/json"});
+			res.end(JSON.stringify(resultCDN));
+		});
+	});
 });
 
 app.post('/addOrigin', function (req, res) {
