@@ -2,3 +2,5 @@ npm install express
 npm install --save body-parser
 npm install request
 npm install mongodb
+
+npm install tsc

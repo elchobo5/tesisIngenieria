@@ -12,10 +12,15 @@ var app = express();
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
-})); 
+}));
+
+var __projectRoot = 'public/src';
+
+app.use(express.static(__projectRoot));
+app.use('/node_modules', express.static('public/node_modules'));
 
 app.get('/', function (req, res) {
-  	res.send('Hello World!');
+    res.sendFile(path.join(__projectRoot + '/index.html'));
 });
 
 app.get('/cdn', function (req, res) {
