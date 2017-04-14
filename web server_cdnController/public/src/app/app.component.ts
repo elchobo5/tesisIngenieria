@@ -20,7 +20,12 @@ export class AppComponent {
 	model = {
 		addOriginIp: "",
 		addOriginPort: "",
-		addOriginTransport: ""
+		addOriginTransport: "",
+		addSurrogateIpOrigin: "",
+		addSurrogatePortOrigin: "",
+		addSurrogateIpSurrogate: "",
+		addSurrogatePortSurrogate: "",
+		addSurrogateTransport: ""
         };
 
 	changeMenu = (menu: any) => {
@@ -28,8 +33,25 @@ export class AppComponent {
 		this.currentMenu = menu;
 	} 
 	addOrigin = () => {
-		alert(this.model.addOriginIp + " " + this.model.addOriginPort+ " " +this.model.addOriginTransport);
+		//alert(this.model.addOriginIp + " " + this.model.addOriginPort+ " " +this.model.addOriginTransport);
 		this.appService.addOrigin(this.model.addOriginIp, this.model.addOriginPort, this.model.addOriginTransport)
-                     .subscribe(result => console.log(result));
+                     .subscribe(result => { console.log(result);
+					    this.model.addOriginIp = "";
+					    this.model.addOriginPort = "";
+					    this.model.addOriginTransport = "";
+					  }
+		      );
+	}
+
+	addSurrogate = () => {
+		this.appService.addSurrogate(this.model.addSurrogateIpOrigin, this.model.addSurrogatePortOrigin, this.model.addSurrogateIpSurrogate, this.model.addSurrogatePortSurrogate, this.model.addSurrogateTransport)
+                     .subscribe(result => { console.log(result);
+					    this.model.addSurrogateIpOrigin = "";
+					    this.model.addSurrogatePortOrigin = "";
+					    this.model.addSurrogateIpSurrogate = "";
+					    this.model.addSurrogatePortSurrogate = "";
+					    this.model.addSurrogateTransport = "";
+					  }
+		      );
 	}
 }

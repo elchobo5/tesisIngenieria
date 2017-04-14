@@ -98,25 +98,25 @@ En este sentido, se ha avanzado en la implementación de un prototipo de RAU de 
 						  <div class="form-group">
 						    <label for="inputEmail3" class="col-sm-2 control-label">IP Origin</label>
 						    <div class="col-sm-10">
-						      <input type="text" class="form-control" id="iporigin" placeholder="ip origin" [(ngModel)]="model.addOriginIp">
+						      <input type="text" name="addOriginIp" class="form-control" placeholder="ip origin" [(ngModel)]="model.addOriginIp">
 						    </div>
 						  </div>
 						  <div class="form-group">
 						    <label for="inputEmail3" class="col-sm-2 control-label">Port Origin</label>
 						    <div class="col-sm-10">
-						      <input type="text" class="form-control" id="portorigin" placeholder="port origin" [(ngModel)]="model.addOriginPort">
+						      <input type="text" name="addOriginPort" class="form-control" placeholder="port origin" [(ngModel)]="model.addOriginPort">
 						    </div>
 						  </div>
 						  <div class="form-group">
 						    <div class="col-sm-offset-2 col-sm-10">
 						      <div class="radio">
 							<label>
-							  <input type="radio" name="transport" [(ngModel)]="model.addOriginTransport" value="tcp"> TCP
+							  <input  type="radio" name="transport" value="tcp" [(ngModel)]="model.addOriginTransport"> TCP
 							</label>
 						      </div>
 						      <div class="radio">
 							<label>
-							  <input type="radio" name="transport" [(ngModel)]="model.addOriginTransport" value="udp"> UDP
+							  <input type="radio" name="transport" value="udp" [(ngModel)]="model.addOriginTransport"> UDP
 							</label>
 						      </div>
 						    </div>
@@ -124,6 +124,66 @@ En este sentido, se ha avanzado en la implementación de un prototipo de RAU de 
 						  <div class="form-group">
 						    <div class="col-sm-offset-2 col-sm-10">
 						      <button  (click)="addOrigin()" class="btn btn-primary">Agregar</button>
+						    </div>
+						  </div>
+						</form>
+	  				</div>
+		  		</div>
+			</div>
+		  </div>
+		  <div class="col-md-10" *ngIf="currentMenu=='addSurrogate'">
+			<div class="row">
+				<div class="col-md-12 panel-warning">
+					<div class="content-box-header panel-heading">
+					    	<div class="panel-title">Agregar Surrogate</div>
+					    	<div class="panel-options">
+					      		<a href="#" data-rel="collapse"><i class="glyphicon glyphicon-refresh"></i></a>
+					      		<a href="#" data-rel="reload"><i class="glyphicon glyphicon-cog"></i></a>
+					    	</div>
+					</div>
+	  				<div class="content-box-large box-with-header">
+	  					<form class="form-horizontal" role="form">
+						  <div class="form-group">
+						    <label for="inputEmail3" class="col-sm-2 control-label">IP Origin</label>
+						    <div class="col-sm-10">
+						      <input type="text" name="addSurrogateIpOrigin" class="form-control" placeholder="ip origin" [(ngModel)]="model.addSurrogateIpOrigin">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="inputEmail3" class="col-sm-2 control-label">Port Origin</label>
+						    <div class="col-sm-10">
+						      <input type="text" name="addSurrogatePortOrigin" class="form-control" placeholder="port origin" [(ngModel)]="model.addSurrogatePortOrigin">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="inputEmail3" class="col-sm-2 control-label">IP Surrogate</label>
+						    <div class="col-sm-10">
+						      <input type="text" name="addSurrogateIpSurrogate" class="form-control" placeholder="ip surrogate" [(ngModel)]="model.addSurrogateIpSurrogate">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="inputEmail3" class="col-sm-2 control-label">Port Surrogate</label>
+						    <div class="col-sm-10">
+						      <input type="text" name="addSurrogatePortSurrogate" class="form-control" placeholder="port surrogate" [(ngModel)]="model.addSurrogatePortSurrogate">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <div class="col-sm-offset-2 col-sm-10">
+						      <div class="radio">
+							<label>
+							  <input  type="radio" name="addSurrogateTransport" value="tcp" [(ngModel)]="model.addSurrogateTransport"> TCP
+							</label>
+						      </div>
+						      <div class="radio">
+							<label>
+							  <input type="radio" name="addSurrogateTransport" value="udp" [(ngModel)]="model.addSurrogateTransport"> UDP
+							</label>
+						      </div>
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <div class="col-sm-offset-2 col-sm-10">
+						      <button  (click)="addSurrogate()" class="btn btn-primary">Agregar</button>
 						    </div>
 						  </div>
 						</form>

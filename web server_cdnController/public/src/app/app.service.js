@@ -26,6 +26,14 @@ var AppService = (function () {
             console.log("LLega aca");
             return _this.postRequest(url, data, options);
         };
+        this.addSurrogate = function (ipOrigin, portOrigin, ipSurrogate, portSurrogate, transport) {
+            var data = JSON.stringify({ 'ipOrigin': ipOrigin, 'portOrigin': parseInt(portOrigin), 'transport': transport, 'ipSurrogate': ipSurrogate, 'portSurrogate': parseInt(portSurrogate) });
+            var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
+            var options = new http_1.RequestOptions({ headers: headers });
+            var url = "http://localhost:3000/addSurrogate";
+            console.log("LLega aca");
+            return _this.postRequest(url, data, options);
+        };
         this.postRequest = function (url, data, options) {
             console.log(data);
             return _this.http.post(url, data, options)

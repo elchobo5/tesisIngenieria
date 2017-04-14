@@ -1,7 +1,7 @@
 '''
 Created on Feb 26, 2015
 
-@author: efviodo,mduarte v4
+@author: efviodo,mduarte v5
 '''
 
 import json
@@ -42,7 +42,7 @@ from ryu.app.wsgi import (
     websocket,
     WebSocketRPCClient
 )
-from ryu.topology import event, switches
+from ryu.topology import event, switches, api
 
 from datetime import datetime
 
@@ -55,6 +55,11 @@ from ryu.lib import dpid as dpid_lib
 from ryu.lib.mac import haddr_to_str
 import struct
 import random
+
+from pyroute2 import IPRoute
+
+
+
 
 
 #API REST config
@@ -328,6 +333,35 @@ class GUIServerApp(app_manager.RyuApp):
         mod = parser.OFPFlowMod(datapath=datapath, priority=priority,
                                 match=match, instructions=inst, idle_timeout = idle_timeout)
         datapath.send_msg(mod)
+
+    def selectSurrogate(self, datapath, surrogatesElegir):
+	ip = IPRoute()
+	gatewaySurrogates = {}
+	#borderRouters = []
+	for i in surrogatesElegir:
+		ipSurrogate = i['surrogate']
+		route = ip.get_routes(dst=ipSurrogate)
+		route = route[0]
+		route = route['attrs']
+		for attr in route:
+			if (attr[0] == 'RTA_GATEWAY'):
+				gatewaySurrogates[ipSurrogate] = attr[1]
+				self.logger.info("ip_surrogate: %s, gateway: %s",ipSurrogate,attr[1])
+				break
+	#buscar entre todos los switchs cual tiene ip contenida en gateway surrogates y despues aplicar dijkstra al dp origen y los obtenidos
+	
+	nodes = self.proxy.get_topology()
+	for ipSurrogate, gateway in gatewaySurrogates.items():
+		for node in nodes:
+			jsonNode = json.loads(node.to_JSON())
+			self.logger.info("switch: %s %s",jsonNode['router_id'], gateway)
+			if (jsonNode['router_id'] == gateway):
+				self.logger.info("agrego: %s",jsonNode['datapath_id'])
+				#borderRouters.append(jsonNode['datapath_id'])
+				gatewaySurrogates[ipSurrogate] = jsonNode['datapath_id']
+				break
+				
+	return {'surrogate' : '10.10.0.1', 'port': '80'}	
 						  
 
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
@@ -366,15 +400,18 @@ class GUIServerApp(app_manager.RyuApp):
 				tcp_src = tcp_pkt.src_port
 			elif (udp_pkt):
 				udp_dst = udp_pkt.dst_port
-				udp_src = udp_pkt.src_port
-
+				udp_src = udp_pkt.src_port		
+			
 			if (tcp_pkt):
 				self.logger.info("ip_dst: %s, tcp_dst: %s",ip_dst,tcp_dst)
 				if ((ip_dst in self.origins) and (tcp_dst in self.origins[ip_dst]) and ('tcp' in self.origins[ip_dst][tcp_dst])):
 					match = parser.OFPMatch(eth_type=ether.ETH_TYPE_IP,tcp_dst=tcp_dst,ip_proto=ipv4_pkt.proto,ipv4_dst=ip_dst,in_port=int(self.borderSwitches[dpid]))
 					if (len(self.origins[ip_dst][tcp_dst]['tcp']) > 0):
+						#busco el mejor surrogate						
+						surrogateSelect = self.selectSurrogate(datapath, self.origins[ip_dst][tcp_dst]['tcp'])
 						j = random.randint(0,len(self.origins[ip_dst][tcp_dst]['tcp'])-1)
-						actions = [parser.OFPActionSetField(tcp_dst=self.origins[ip_dst][tcp_dst]['tcp'][j]['port']),parser.OFPActionSetField(ipv4_dst=self.origins[ip_dst][tcp_dst]['tcp'][j]['surrogate']),parser.OFPActionOutput(out_port)]		
+						actions = [parser.OFPActionSetField(tcp_dst=self.origins[ip_dst][tcp_dst]['tcp'][j]['port']),parser.OFPActionSetField(ipv4_dst=self.origins[ip_dst][tcp_dst]['tcp'][j]['surrogate']),parser.OFPActionOutput(out_port)]								
+						#actions = [parser.OFPActionSetField(tcp_dst=int(surrogateSelect['port'])),parser.OFPActionSetField(ipv4_dst=surrogateSelect['surrogate']),parser.OFPActionOutput(out_port)]		
 					else:
 						actions = [parser.OFPActionOutput(out_port)]
 
@@ -425,8 +462,11 @@ class GUIServerApp(app_manager.RyuApp):
 					# construct action list.
 					match = parser.OFPMatch(eth_type=ether.ETH_TYPE_IP,udp_dst=udp_dst,ip_proto=ipv4_pkt.proto,ipv4_dst=ip_dst,in_port=int(self.borderSwitches[dpid]))
 					if (len(self.origins[ip_dst][udp_dst]['udp']) > 0):
+						#busco el mejor surrogate						
+						surrogateSelect = self.selectSurrogate(datapath, self.origins[ip_dst][udp_dst]['udp'])
 						j = random.randint(0,len(self.origins[ip_dst][udp_dst]['udp'])-1)
-						actions = [parser.OFPActionSetField(udp_dst= self.origins[ip_dst][udp_dst]['udp'][j]['port']),parser.OFPActionSetField(ipv4_dst=self.origins[ip_dst][udp_dst]['udp'][j]['surrogate']),parser.OFPActionOutput(out_port)]
+						actions = [parser.OFPActionSetField(udp_dst= self.origins[ip_dst][udp_dst]['udp'][j]['port']),parser.OFPActionSetField(ipv4_dst=self.origins[ip_dst][udp_dst]['udp'][j]['surrogate']),parser.OFPActionOutput(out_port)]						
+						#actions = [parser.OFPActionSetField(udp_dst=int(surrogateSelect['port'])),parser.OFPActionSetField(ipv4_dst=surrogateSelect['surrogate']),parser.OFPActionOutput(out_port)]
 					else:
 						actions = [parser.OFPActionOutput(out_port)]
 			
@@ -734,16 +774,13 @@ class GUIServerController(ControllerBase):
         data = getHTTPBody(req)
 	
         if data == "":
-	    print("no borra 1")
             body = json.dumps({'Result': False}, 2)
             return Response(content_type='json', body=body, status=200)
 	dataObject = json.loads(data)
 	ipTodelete = dataObject['ipOrigin']
 	portTodelete = dataObject['portOrigin']
 	transportTodelete = dataObject['transport']
-	print("data: %s, %s, %s",ipTodelete,portTodelete,transportTodelete)
 	if (ipTodelete not in self.mainapp.origins or portTodelete not in self.mainapp.origins[ipTodelete] or transportTodelete not in self.mainapp.origins[ipTodelete][portTodelete]):
-		print("no borra 2")
 		body = json.dumps({'Result': False}, 2)
             	return Response(content_type='json', body=body, status=200)
 	else:

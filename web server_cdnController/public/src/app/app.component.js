@@ -20,16 +20,37 @@ var AppComponent = (function () {
         this.model = {
             addOriginIp: "",
             addOriginPort: "",
-            addOriginTransport: ""
+            addOriginTransport: "",
+            addSurrogateIpOrigin: "",
+            addSurrogatePortOrigin: "",
+            addSurrogateIpSurrogate: "",
+            addSurrogatePortSurrogate: "",
+            addSurrogateTransport: ""
         };
         this.changeMenu = function (menu) {
             //alert(menu + "   " + this.currentMenu);
             _this.currentMenu = menu;
         };
         this.addOrigin = function () {
-            alert(_this.model.addOriginIp + " " + _this.model.addOriginPort + " " + _this.model.addOriginTransport);
+            //alert(this.model.addOriginIp + " " + this.model.addOriginPort+ " " +this.model.addOriginTransport);
             _this.appService.addOrigin(_this.model.addOriginIp, _this.model.addOriginPort, _this.model.addOriginTransport)
-                .subscribe(function (result) { return console.log(result); });
+                .subscribe(function (result) {
+                console.log(result);
+                _this.model.addOriginIp = "";
+                _this.model.addOriginPort = "";
+                _this.model.addOriginTransport = "";
+            });
+        };
+        this.addSurrogate = function () {
+            _this.appService.addSurrogate(_this.model.addSurrogateIpOrigin, _this.model.addSurrogatePortOrigin, _this.model.addSurrogateIpSurrogate, _this.model.addSurrogatePortSurrogate, _this.model.addSurrogateTransport)
+                .subscribe(function (result) {
+                console.log(result);
+                _this.model.addSurrogateIpOrigin = "";
+                _this.model.addSurrogatePortOrigin = "";
+                _this.model.addSurrogateIpSurrogate = "";
+                _this.model.addSurrogatePortSurrogate = "";
+                _this.model.addSurrogateTransport = "";
+            });
         };
     }
     return AppComponent;

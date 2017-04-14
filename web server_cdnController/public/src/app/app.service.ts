@@ -16,6 +16,14 @@ export class AppService {
 	console.log("LLega aca");
         return this.postRequest(url,data,options);
   }
+  addSurrogate = (ipOrigin: any, portOrigin: any, ipSurrogate: any, portSurrogate:any, transport: any) => {
+	let data: any = JSON.stringify({'ipOrigin': ipOrigin, 'portOrigin': parseInt(portOrigin), 'transport': transport, 'ipSurrogate': ipSurrogate, 'portSurrogate': parseInt(portSurrogate)});
+        let headers: any = new Headers({ 'Content-Type': 'application/json' });
+        let options: any = new RequestOptions({ headers: headers });
+        let url: any = "http://localhost:3000/addSurrogate";
+	console.log("LLega aca");
+        return this.postRequest(url,data,options);
+  }
   postRequest =  (url: any, data: any, options: any): Observable<any> => {
     console.log(data);
     return this.http.post(url,data,options)
