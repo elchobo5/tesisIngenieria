@@ -47,6 +47,7 @@ app.post('/addOrigin', function (req, res) {
 	var ipOrigin = req.body.ipOrigin;
 	var portOrigin = req.body.portOrigin;
 	var transport = req.body.transport;
+	console.log("datos: " + ipOrigin + " " + portOrigin + " " + transport);
 	var options = {
 		uri: 'http://192.168.56.101:8080/addOrigin',
 		method: 'POST',

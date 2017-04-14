@@ -17,9 +17,19 @@ var AppComponent = (function () {
         this.appService = appService;
         this.name = 'Angular';
         this.currentMenu = "inicio";
+        this.model = {
+            addOriginIp: "",
+            addOriginPort: "",
+            addOriginTransport: ""
+        };
         this.changeMenu = function (menu) {
             //alert(menu + "   " + this.currentMenu);
             _this.currentMenu = menu;
+        };
+        this.addOrigin = function () {
+            alert(_this.model.addOriginIp + " " + _this.model.addOriginPort + " " + _this.model.addOriginTransport);
+            _this.appService.addOrigin(_this.model.addOriginIp, _this.model.addOriginPort, _this.model.addOriginTransport)
+                .subscribe(function (result) { return console.log(result); });
         };
     }
     return AppComponent;
