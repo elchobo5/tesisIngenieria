@@ -10,28 +10,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
-var app_service_1 = require("./app.service");
-var AppComponent = (function () {
-    function AppComponent(appService) {
-        var _this = this;
-        this.appService = appService;
-        this.name = 'Angular';
-        this.currentMenu = "inicio";
-        this.changeMenu = function (menu) {
-            //alert(menu + "   " + this.currentMenu);
-            _this.currentMenu = menu;
-        };
+var http_1 = require("@angular/http");
+require("rxjs/add/operator/catch");
+require("rxjs/add/operator/map");
+var AppService = (function () {
+    function AppService(http) {
+        this.http = http;
     }
-    return AppComponent;
+    return AppService;
 }());
-AppComponent = __decorate([
-    core_1.Component({
-        selector: 'my-app',
-        moduleId: module.id,
-        providers: [app_service_1.AppService],
-        templateUrl: "app.component.html"
-    }),
-    __metadata("design:paramtypes", [app_service_1.AppService])
-], AppComponent);
-exports.AppComponent = AppComponent;
-//# sourceMappingURL=app.component.js.map
+AppService = __decorate([
+    core_1.Injectable(),
+    __metadata("design:paramtypes", [http_1.Http])
+], AppService);
+exports.AppService = AppService;
+//# sourceMappingURL=app.service.js.map
