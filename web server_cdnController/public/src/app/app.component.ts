@@ -5,4 +5,17 @@ import { Component } from '@angular/core';
   moduleId: module.id,
   templateUrl: `app.component.html`
 })
-export class AppComponent { name = 'Angular'; }
+
+export class AppComponent { 
+
+	constructor(){
+  	}
+
+	name = 'Angular';
+	
+	currentMenu = "inicio";
+	changeMenu = (menu: any) => {
+		alert(menu + "   " + this.currentMenu);
+		this.currentMenu = menu;
+	} 
+}
