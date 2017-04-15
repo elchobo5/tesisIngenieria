@@ -191,6 +191,114 @@ En este sentido, se ha avanzado en la implementación de un prototipo de RAU de 
 		  		</div>
 			</div>
 		  </div>
+		  <div class="col-md-10" *ngIf="currentMenu=='deleteOrigin'">
+			<div class="row">
+				<div class="col-md-12 panel-warning">
+					<div class="content-box-header panel-heading">
+					    	<div class="panel-title">Eliminar Origin</div>
+					    	<div class="panel-options">
+					      		<a href="#" data-rel="collapse"><i class="glyphicon glyphicon-refresh"></i></a>
+					      		<a href="#" data-rel="reload"><i class="glyphicon glyphicon-cog"></i></a>
+					    	</div>
+					</div>
+	  				<div class="content-box-large box-with-header">
+	  					<form class="form-horizontal" role="form">
+						  <div class="form-group">
+						    <label for="inputEmail3" class="col-sm-2 control-label">IP Origin</label>
+						    <div class="col-sm-10">
+						      <input type="text" name="deleteOriginIp" class="form-control" placeholder="ip origin" [(ngModel)]="model.deleteOriginIp">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="inputEmail3" class="col-sm-2 control-label">Port Origin</label>
+						    <div class="col-sm-10">
+						      <input type="text" name="deleteOriginPort" class="form-control" placeholder="port origin" [(ngModel)]="model.deleteOriginPort">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <div class="col-sm-offset-2 col-sm-10">
+						      <div class="radio">
+							<label>
+							  <input  type="radio" name="deletetransport" value="tcp" [(ngModel)]="model.deleteOriginTransport"> TCP
+							</label>
+						      </div>
+						      <div class="radio">
+							<label>
+							  <input type="radio" name="deletetransport" value="udp" [(ngModel)]="model.deleteOriginTransport"> UDP
+							</label>
+						      </div>
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <div class="col-sm-offset-2 col-sm-10">
+						      <button  (click)="deleteOrigin()" class="btn btn-primary">Eliminar</button>
+						    </div>
+						  </div>
+						</form>
+	  				</div>
+		  		</div>
+			</div>
+		  </div>
+		  <div class="col-md-10" *ngIf="currentMenu=='deleteSurrogate'">
+			<div class="row">
+				<div class="col-md-12 panel-warning">
+					<div class="content-box-header panel-heading">
+					    	<div class="panel-title">Eliminar Surrogate</div>
+					    	<div class="panel-options">
+					      		<a href="#" data-rel="collapse"><i class="glyphicon glyphicon-refresh"></i></a>
+					      		<a href="#" data-rel="reload"><i class="glyphicon glyphicon-cog"></i></a>
+					    	</div>
+					</div>
+	  				<div class="content-box-large box-with-header">
+	  					<form class="form-horizontal" role="form">
+						  <div class="form-group">
+						    <label for="inputEmail3" class="col-sm-2 control-label">IP Origin</label>
+						    <div class="col-sm-10">
+						      <input type="text" name="deleteSurrogateIpOrigin" class="form-control" placeholder="ip origin" [(ngModel)]="model.deleteSurrogateIpOrigin">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="inputEmail3" class="col-sm-2 control-label">Port Origin</label>
+						    <div class="col-sm-10">
+						      <input type="text" name="deleteSurrogatePortOrigin" class="form-control" placeholder="port origin" [(ngModel)]="model.deleteSurrogatePortOrigin">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="inputEmail3" class="col-sm-2 control-label">IP Surrogate</label>
+						    <div class="col-sm-10">
+						      <input type="text" name="deleteSurrogateIpSurrogate" class="form-control" placeholder="ip surrogate" [(ngModel)]="model.deleteSurrogateIpSurrogate">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <label for="inputEmail3" class="col-sm-2 control-label">Port Surrogate</label>
+						    <div class="col-sm-10">
+						      <input type="text" name="deleteSurrogatePortSurrogate" class="form-control" placeholder="port surrogate" [(ngModel)]="model.deleteSurrogatePortSurrogate">
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <div class="col-sm-offset-2 col-sm-10">
+						      <div class="radio">
+							<label>
+							  <input  type="radio" name="deleteSurrogateTransport" value="tcp" [(ngModel)]="model.deleteSurrogateTransport"> TCP
+							</label>
+						      </div>
+						      <div class="radio">
+							<label>
+							  <input type="radio" name="deleteSurrogateTransport" value="udp" [(ngModel)]="model.deleteSurrogateTransport"> UDP
+							</label>
+						      </div>
+						    </div>
+						  </div>
+						  <div class="form-group">
+						    <div class="col-sm-offset-2 col-sm-10">
+						      <button  (click)="deleteSurrogate()" class="btn btn-primary">Eliminar</button>
+						    </div>
+						  </div>
+						</form>
+	  				</div>
+		  		</div>
+			</div>
+		  </div>
 	</div>
     </div>
 

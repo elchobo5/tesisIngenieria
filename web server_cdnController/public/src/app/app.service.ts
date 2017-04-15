@@ -13,7 +13,7 @@ export class AppService {
         let headers: any = new Headers({ 'Content-Type': 'application/json' });
         let options: any = new RequestOptions({ headers: headers });
         let url: any = "http://localhost:3000/addOrigin";
-	console.log("LLega aca");
+	//console.log("LLega aca");
         return this.postRequest(url,data,options);
   }
   addSurrogate = (ipOrigin: any, portOrigin: any, ipSurrogate: any, portSurrogate:any, transport: any) => {
@@ -21,7 +21,23 @@ export class AppService {
         let headers: any = new Headers({ 'Content-Type': 'application/json' });
         let options: any = new RequestOptions({ headers: headers });
         let url: any = "http://localhost:3000/addSurrogate";
-	console.log("LLega aca");
+	//console.log("LLega aca");
+        return this.postRequest(url,data,options);
+  }
+  deleteOrigin = (ipOrigin: any, portOrigin: any, transportOrigin: any) => {
+	let data: any = JSON.stringify({'ipOrigin': ipOrigin, 'portOrigin': parseInt(portOrigin), 'transport': transportOrigin});
+        let headers: any = new Headers({ 'Content-Type': 'application/json' });
+        let options: any = new RequestOptions({ headers: headers });
+        let url: any = "http://localhost:3000/deleteOrigin";
+	//console.log("LLega aca");
+        return this.postRequest(url,data,options);
+  }
+  deleteSurrogate = (ipOrigin: any, portOrigin: any, ipSurrogate: any, portSurrogate:any, transport: any) => {
+	let data: any = JSON.stringify({'ipOrigin': ipOrigin, 'portOrigin': parseInt(portOrigin), 'transport': transport, 'ipSurrogate': ipSurrogate, 'portSurrogate': parseInt(portSurrogate)});
+        let headers: any = new Headers({ 'Content-Type': 'application/json' });
+        let options: any = new RequestOptions({ headers: headers });
+        let url: any = "http://localhost:3000/deleteSurrogate";
+	//console.log("LLega aca");
         return this.postRequest(url,data,options);
   }
   postRequest =  (url: any, data: any, options: any): Observable<any> => {

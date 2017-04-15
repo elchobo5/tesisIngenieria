@@ -25,7 +25,15 @@ var AppComponent = (function () {
             addSurrogatePortOrigin: "",
             addSurrogateIpSurrogate: "",
             addSurrogatePortSurrogate: "",
-            addSurrogateTransport: ""
+            addSurrogateTransport: "",
+            deleteOriginIp: "",
+            deleteOriginPort: "",
+            deleteOriginTransport: "",
+            deleteSurrogateIpOrigin: "",
+            deleteSurrogatePortOrigin: "",
+            deleteSurrogateIpSurrogate: "",
+            deleteSurrogatePortSurrogate: "",
+            deleteSurrogateTransport: ""
         };
         this.changeMenu = function (menu) {
             //alert(menu + "   " + this.currentMenu);
@@ -50,6 +58,26 @@ var AppComponent = (function () {
                 _this.model.addSurrogateIpSurrogate = "";
                 _this.model.addSurrogatePortSurrogate = "";
                 _this.model.addSurrogateTransport = "";
+            });
+        };
+        this.deleteOrigin = function () {
+            _this.appService.deleteOrigin(_this.model.deleteOriginIp, _this.model.deleteOriginPort, _this.model.deleteOriginTransport)
+                .subscribe(function (result) {
+                console.log(result);
+                _this.model.deleteOriginIp = "";
+                _this.model.deleteOriginPort = "";
+                _this.model.deleteOriginTransport = "";
+            });
+        };
+        this.deleteSurrogate = function () {
+            _this.appService.deleteSurrogate(_this.model.deleteSurrogateIpOrigin, _this.model.deleteSurrogatePortOrigin, _this.model.deleteSurrogateIpSurrogate, _this.model.deleteSurrogatePortSurrogate, _this.model.deleteSurrogateTransport)
+                .subscribe(function (result) {
+                console.log(result);
+                _this.model.deleteSurrogateIpOrigin = "";
+                _this.model.deleteSurrogatePortOrigin = "";
+                _this.model.deleteSurrogateIpSurrogate = "";
+                _this.model.deleteSurrogatePortSurrogate = "";
+                _this.model.deleteSurrogateTransport = "";
             });
         };
     }

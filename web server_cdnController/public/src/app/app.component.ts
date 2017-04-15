@@ -25,7 +25,15 @@ export class AppComponent {
 		addSurrogatePortOrigin: "",
 		addSurrogateIpSurrogate: "",
 		addSurrogatePortSurrogate: "",
-		addSurrogateTransport: ""
+		addSurrogateTransport: "",
+		deleteOriginIp: "",
+		deleteOriginPort: "",
+		deleteOriginTransport: "",
+		deleteSurrogateIpOrigin: "",
+		deleteSurrogatePortOrigin: "",
+		deleteSurrogateIpSurrogate: "",
+		deleteSurrogatePortSurrogate: "",
+		deleteSurrogateTransport: ""
         };
 
 	changeMenu = (menu: any) => {
@@ -51,6 +59,27 @@ export class AppComponent {
 					    this.model.addSurrogateIpSurrogate = "";
 					    this.model.addSurrogatePortSurrogate = "";
 					    this.model.addSurrogateTransport = "";
+					  }
+		      );
+	}
+	deleteOrigin = () => {
+
+		this.appService.deleteOrigin(this.model.deleteOriginIp, this.model.deleteOriginPort, this.model.deleteOriginTransport)
+                     .subscribe(result => { console.log(result);
+					    this.model.deleteOriginIp = "";
+					    this.model.deleteOriginPort = "";
+					    this.model.deleteOriginTransport = "";
+					  }
+		      );
+	}
+	deleteSurrogate = () => {
+		this.appService.deleteSurrogate(this.model.deleteSurrogateIpOrigin, this.model.deleteSurrogatePortOrigin, this.model.deleteSurrogateIpSurrogate, this.model.deleteSurrogatePortSurrogate, this.model.deleteSurrogateTransport)
+                     .subscribe(result => { console.log(result);
+					    this.model.deleteSurrogateIpOrigin = "";
+					    this.model.deleteSurrogatePortOrigin = "";
+					    this.model.deleteSurrogateIpSurrogate = "";
+					    this.model.deleteSurrogatePortSurrogate = "";
+					    this.model.deleteSurrogateTransport = "";
 					  }
 		      );
 	}

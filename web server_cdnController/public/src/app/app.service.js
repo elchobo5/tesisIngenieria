@@ -23,7 +23,7 @@ var AppService = (function () {
             var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
             var options = new http_1.RequestOptions({ headers: headers });
             var url = "http://localhost:3000/addOrigin";
-            console.log("LLega aca");
+            //console.log("LLega aca");
             return _this.postRequest(url, data, options);
         };
         this.addSurrogate = function (ipOrigin, portOrigin, ipSurrogate, portSurrogate, transport) {
@@ -31,7 +31,23 @@ var AppService = (function () {
             var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
             var options = new http_1.RequestOptions({ headers: headers });
             var url = "http://localhost:3000/addSurrogate";
-            console.log("LLega aca");
+            //console.log("LLega aca");
+            return _this.postRequest(url, data, options);
+        };
+        this.deleteOrigin = function (ipOrigin, portOrigin, transportOrigin) {
+            var data = JSON.stringify({ 'ipOrigin': ipOrigin, 'portOrigin': parseInt(portOrigin), 'transport': transportOrigin });
+            var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
+            var options = new http_1.RequestOptions({ headers: headers });
+            var url = "http://localhost:3000/deleteOrigin";
+            //console.log("LLega aca");
+            return _this.postRequest(url, data, options);
+        };
+        this.deleteSurrogate = function (ipOrigin, portOrigin, ipSurrogate, portSurrogate, transport) {
+            var data = JSON.stringify({ 'ipOrigin': ipOrigin, 'portOrigin': parseInt(portOrigin), 'transport': transport, 'ipSurrogate': ipSurrogate, 'portSurrogate': parseInt(portSurrogate) });
+            var headers = new http_1.Headers({ 'Content-Type': 'application/json' });
+            var options = new http_1.RequestOptions({ headers: headers });
+            var url = "http://localhost:3000/deleteSurrogate";
+            //console.log("LLega aca");
             return _this.postRequest(url, data, options);
         };
         this.postRequest = function (url, data, options) {
