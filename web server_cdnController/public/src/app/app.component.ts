@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { FormsModule }   from '@angular/forms';
 import { AppService } from './app.service';
+import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/map';
 
 @Component({
   selector: 'my-app',
@@ -17,6 +20,7 @@ export class AppComponent {
 	name = 'Angular';
 	
 	currentMenu = "inicio";
+	origins: any = [];
 	model = {
 		addOriginIp: "",
 		addOriginPort: "",
@@ -38,7 +42,12 @@ export class AppComponent {
 
 	changeMenu = (menu: any) => {
 		//alert(menu + "   " + this.currentMenu);
-		this.currentMenu = menu;
+		if (menu == "cdn") {
+			this.getCDN();
+		}
+		else {
+			this.currentMenu = menu;
+		}
 	} 
 	addOrigin = () => {
 		//alert(this.model.addOriginIp + " " + this.model.addOriginPort+ " " +this.model.addOriginTransport);
@@ -82,5 +91,25 @@ export class AppComponent {
 					    this.model.deleteSurrogateTransport = "";
 					  }
 		      );
+	}
+	loadCDN = (data: any) => {
+		//console.log(data);
+		let i: any;
+		let j: any;
+		let surrogates: string; 
+		this.origins = [];
+		for (i = 0; i < data.length; i++) {
+			surrogates = "";
+			for (j = 0; j < data[i].surrogates.length; j++) {
+				surrogates = surrogates + data[i].surrogates[j].ip + ":" + data[i].surrogates[j].port + "; ";
+			}
+			this.origins[i] = {'id': i, 'ip': data[i].ip, 'port': data[i].port, 'transport': data[i].transport, 'surrogates': surrogates};
+		}
+		console.log(this.origins);
+		this.currentMenu = "cdn";
+	}
+	getCDN = () => {
+		this.appService.getCDN()
+                     .subscribe((data) => this.loadCDN(data));
 	}
 }

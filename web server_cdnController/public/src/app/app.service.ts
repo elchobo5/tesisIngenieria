@@ -40,15 +40,24 @@ export class AppService {
 	//console.log("LLega aca");
         return this.postRequest(url,data,options);
   }
+  getCDN = () => {
+        let url: any = "http://localhost:3000/cdn";
+        return this.getRequest(url);
+  }
   postRequest =  (url: any, data: any, options: any): Observable<any> => {
     console.log(data);
     return this.http.post(url,data,options)
                     .map(this.extractData)
                     .catch(this.handleError);
   }
+  getRequest =  (url: any): Observable<any> => {
+    return this.http.get(url)
+                    .map(this.extractData)
+                    .catch(this.handleError);
+  }
   private extractData(res: Response) {
     let body = res.json();
-    return body.data || { };
+    return body || { };
   }
   private handleError (error: Response | any) {
     // In a real world app, you might use a remote logging infrastructure

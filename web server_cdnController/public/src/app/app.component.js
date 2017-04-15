@@ -11,12 +11,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 var app_service_1 = require("./app.service");
+require("rxjs/add/operator/catch");
+require("rxjs/add/operator/map");
 var AppComponent = (function () {
     function AppComponent(appService) {
         var _this = this;
         this.appService = appService;
         this.name = 'Angular';
         this.currentMenu = "inicio";
+        this.origins = [];
         this.model = {
             addOriginIp: "",
             addOriginPort: "",
@@ -37,7 +40,12 @@ var AppComponent = (function () {
         };
         this.changeMenu = function (menu) {
             //alert(menu + "   " + this.currentMenu);
-            _this.currentMenu = menu;
+            if (menu == "cdn") {
+                _this.getCDN();
+            }
+            else {
+                _this.currentMenu = menu;
+            }
         };
         this.addOrigin = function () {
             //alert(this.model.addOriginIp + " " + this.model.addOriginPort+ " " +this.model.addOriginTransport);
@@ -79,6 +87,26 @@ var AppComponent = (function () {
                 _this.model.deleteSurrogatePortSurrogate = "";
                 _this.model.deleteSurrogateTransport = "";
             });
+        };
+        this.loadCDN = function (data) {
+            //console.log(data);
+            var i;
+            var j;
+            var surrogates;
+            _this.origins = [];
+            for (i = 0; i < data.length; i++) {
+                surrogates = "";
+                for (j = 0; j < data[i].surrogates.length; j++) {
+                    surrogates = surrogates + data[i].surrogates[j].ip + ":" + data[i].surrogates[j].port + "; ";
+                }
+                _this.origins[i] = { 'id': i, 'ip': data[i].ip, 'port': data[i].port, 'transport': data[i].transport, 'surrogates': surrogates };
+            }
+            console.log(_this.origins);
+            _this.currentMenu = "cdn";
+        };
+        this.getCDN = function () {
+            _this.appService.getCDN()
+                .subscribe(function (data) { return _this.loadCDN(data); });
         };
     }
     return AppComponent;

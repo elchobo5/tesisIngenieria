@@ -299,6 +299,48 @@ En este sentido, se ha avanzado en la implementación de un prototipo de RAU de 
 		  		</div>
 			</div>
 		  </div>
+		  <div class="col-md-10" *ngIf="currentMenu=='cdn'">
+			<div class="row">
+				<div class="col-md-12 panel-warning">
+					<div class="content-box-header panel-heading">
+					    	<div class="panel-title">CDN</div>
+					    	<div class="panel-options">
+					      		<a href="#" data-rel="collapse"><i class="glyphicon glyphicon-refresh"></i></a>
+					      		<a href="#" data-rel="reload"><i class="glyphicon glyphicon-cog"></i></a>
+					    	</div>
+					</div>
+	  				<div class="content-box-large box-with-header">
+	  					<div class="panel-heading">
+							<div class="panel-title">Origins</div>
+						</div>
+		  				<div class="panel-body">
+		  					<div class="table-responsive">
+		  						<table class="table">
+						      <thead>
+							<tr>
+							  <th>#</th>
+							  <th>Ip Origin</th>
+							  <th>Puerto Origin</th>
+							  <th>Transport</th>
+							  <th>Surrogates</th>
+							</tr>
+						      </thead>
+						      <tbody>
+							<tr *ngFor="let origin of origins">
+							  <td>{{origin.id}}</td>
+							  <td>{{origin.ip}}</td>
+							  <td>{{origin.port}}</td>
+							  <td>{{origin.transport}}</td>
+							  <td>{{origin.surrogates}}</td>
+							</tr>
+						      </tbody>
+						    </table>
+		  					</div>
+		  				</div>
+	  				</div>
+		  		</div>
+			</div>
+		  </div>
 	</div>
     </div>
 
@@ -306,7 +348,7 @@ En este sentido, se ha avanzado en la implementación de un prototipo de RAU de 
          <div class="container">
          
             <div class="copy text-center">
-               Copyright 2014 <a href='#'>Website</a>
+               Tesis de ingenieria 2017 <a href='#'>Mathias Duarte</a>
             </div>
             
          </div>

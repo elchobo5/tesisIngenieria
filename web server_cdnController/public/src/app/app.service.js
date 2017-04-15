@@ -50,16 +50,25 @@ var AppService = (function () {
             //console.log("LLega aca");
             return _this.postRequest(url, data, options);
         };
+        this.getCDN = function () {
+            var url = "http://localhost:3000/cdn";
+            return _this.getRequest(url);
+        };
         this.postRequest = function (url, data, options) {
             console.log(data);
             return _this.http.post(url, data, options)
                 .map(_this.extractData)
                 .catch(_this.handleError);
         };
+        this.getRequest = function (url) {
+            return _this.http.get(url)
+                .map(_this.extractData)
+                .catch(_this.handleError);
+        };
     }
     AppService.prototype.extractData = function (res) {
         var body = res.json();
-        return body.data || {};
+        return body || {};
     };
     AppService.prototype.handleError = function (error) {
         // In a real world app, you might use a remote logging infrastructure
