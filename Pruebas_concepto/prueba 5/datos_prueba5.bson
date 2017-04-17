@@ -1,0 +1,16 @@
+db.borderSwitches.insert(
+{
+    switches:
+    [
+        {dpid:1, port:3},
+        {dpid:2, port:3},
+	{dpid:3, port:3},
+	{dpid:4, port:3},
+        {dpid:5, port:3},
+	{dpid:6, port:3},
+	{dpid:7, port:3},
+        {dpid:8, port:3},
+	{dpid:9, port:3},
+	{dpid:10, port:3}
+    ]
+})
