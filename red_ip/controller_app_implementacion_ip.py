@@ -58,6 +58,8 @@ import random
 
 from pyroute2 import IPRoute
 
+from ryu.topology.api import get_switch, get_link
+
 
 
 
@@ -233,6 +235,7 @@ class GUIServerApp(app_manager.RyuApp):
 	self.origins = {}
 	self.surrogates = {}
 	self.borderSwitches = {}
+	self.topology_api_app = self;
 
 	for origin_in_collection in origins_collection.find():
 		self.origins[origin_in_collection['ip']] = {}
@@ -336,6 +339,7 @@ class GUIServerApp(app_manager.RyuApp):
 
     def selectSurrogate(self, datapath, surrogatesElegir):
 	ip = IPRoute()
+	dpCliente = datapath.id
 	gatewaySurrogates = {}
 	#borderRouters = []
 	for i in surrogatesElegir:
@@ -360,7 +364,12 @@ class GUIServerApp(app_manager.RyuApp):
 				#borderRouters.append(jsonNode['datapath_id'])
 				gatewaySurrogates[ipSurrogate] = jsonNode['datapath_id']
 				break
-				
+	#aplicar dijkstra para el cliente y todos los surrogates en gatewaySurrogates y encontrar la mejor opcion
+	switch_list = get_switch(self.topology_api_app, None)
+    	switches = [switch.dp.id for switch in switch_list]
+	links_list = get_link(self.topology_api_app, None)
+    	links = [(link.src.dpid,link.dst.dpid) for link in links_list]
+	self.logger.info("links: %s",links)		
 	return {'surrogate' : '10.10.0.1', 'port': '80'}	
 						  
 
