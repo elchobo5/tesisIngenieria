@@ -54,7 +54,7 @@ class CustomTopology( Topo ):
                                 ce_mac_address='00:00:00:00:00:09',
                                 gw='10.50.6.2', local_as="109", remote_as="100", cls=QuaggaRouter)
 
-    routerLan10 = self.addHost('routerLan9', ips=['10.50.7.1/24', '10.9.1.1/24'],
+    routerLan10 = self.addHost('routerLan0', ips=['10.50.7.1/24', '10.9.1.1/24'],
                                 ce_mac_address='00:00:00:00:00:0A',
                                 gw='10.50.7.2', local_as="110", remote_as="100", cls=QuaggaRouter)
 
