@@ -61,6 +61,10 @@ from pyroute2 import IPRoute
 from ryu.topology.api import get_switch, get_link
 
 
+from collections import defaultdict
+from heapq import *
+
+
 
 
 
@@ -336,8 +340,28 @@ class GUIServerApp(app_manager.RyuApp):
         mod = parser.OFPFlowMod(datapath=datapath, priority=priority,
                                 match=match, instructions=inst, idle_timeout = idle_timeout)
         datapath.send_msg(mod)
+    
+    def dijkstra(self, edges, f, t):
+	    g = defaultdict(list)
+	    for l,r,c in edges:
+		g[l].append((c,r))
+
+	    q, seen = [(0,f,())], set()
+	    while q:
+		(cost,v1,path) = heappop(q)
+		if v1 not in seen:
+		    seen.add(v1)
+		    path = (v1, path)
+		    if v1 == t: return (cost, path)
+
+		    for c, v2 in g.get(v1, ()):
+		        if v2 not in seen:
+		            heappush(q, (cost+c, v2, path))
+
+	    return float("inf")
 
     def selectSurrogate(self, datapath, surrogatesElegir):
+	Q = []
 	ip = IPRoute()
 	dpCliente = datapath.id
 	gatewaySurrogates = {}
@@ -370,7 +394,26 @@ class GUIServerApp(app_manager.RyuApp):
 	links_list = get_link(self.topology_api_app, None)
     	links = [(link.src.dpid,link.dst.dpid) for link in links_list]
 	self.logger.info("links: %s",links)		
-	return {'surrogate' : '10.10.0.1', 'port': '80'}	
+
+	for link in links:
+		Q.append((int(link[0]),int(link[1]),1))
+	self.logger.info("Q: %s",Q)
+	minimo = -1
+	surrogateElegido = ""
+
+	for ipSurrogate, switch in gatewaySurrogates.items():
+		self.logger.info("dpCliente: %s,  switch: %s",int(dpCliente),int(switch))
+		dist = self.dijkstra(Q,int(dpCliente),int(switch))
+		self.logger.info("Resultado Dist: %s",dist)
+		dist = dist[0]
+		if ((minimo == -1) or (dist < minimo)):
+			minimo = dist
+			surrogateElegido = ipSurrogate
+	self.logger.info("Surrogate elegido: %s %s",surrogateElegido,minimo)
+	for i in surrogatesElegir:
+		if (i['surrogate'] == surrogateElegido):
+			return {'surrogate': surrogateElegido, 'port': i['port']}
+	#return {'surrogate' : '10.10.0.1', 'port': '80'}	
 						  
 
     @set_ev_cls(ofp_event.EventOFPPacketIn, MAIN_DISPATCHER)
@@ -418,8 +461,9 @@ class GUIServerApp(app_manager.RyuApp):
 					if (len(self.origins[ip_dst][tcp_dst]['tcp']) > 0):
 						#busco el mejor surrogate						
 						surrogateSelect = self.selectSurrogate(datapath, self.origins[ip_dst][tcp_dst]['tcp'])
-						j = random.randint(0,len(self.origins[ip_dst][tcp_dst]['tcp'])-1)
-						actions = [parser.OFPActionSetField(tcp_dst=self.origins[ip_dst][tcp_dst]['tcp'][j]['port']),parser.OFPActionSetField(ipv4_dst=self.origins[ip_dst][tcp_dst]['tcp'][j]['surrogate']),parser.OFPActionOutput(out_port)]								
+						self.logger.info("surrogate elegido: %s, %s",surrogateSelect['surrogate'],surrogateSelect['port'])
+						#j = random.randint(0,len(self.origins[ip_dst][tcp_dst]['tcp'])-1)
+						actions = [parser.OFPActionSetField(tcp_dst=int(surrogateSelect['port'])),parser.OFPActionSetField(ipv4_dst=surrogateSelect['surrogate']),parser.OFPActionOutput(out_port)]								
 						#actions = [parser.OFPActionSetField(tcp_dst=int(surrogateSelect['port'])),parser.OFPActionSetField(ipv4_dst=surrogateSelect['surrogate']),parser.OFPActionOutput(out_port)]		
 					else:
 						actions = [parser.OFPActionOutput(out_port)]
@@ -473,8 +517,8 @@ class GUIServerApp(app_manager.RyuApp):
 					if (len(self.origins[ip_dst][udp_dst]['udp']) > 0):
 						#busco el mejor surrogate						
 						surrogateSelect = self.selectSurrogate(datapath, self.origins[ip_dst][udp_dst]['udp'])
-						j = random.randint(0,len(self.origins[ip_dst][udp_dst]['udp'])-1)
-						actions = [parser.OFPActionSetField(udp_dst= self.origins[ip_dst][udp_dst]['udp'][j]['port']),parser.OFPActionSetField(ipv4_dst=self.origins[ip_dst][udp_dst]['udp'][j]['surrogate']),parser.OFPActionOutput(out_port)]						
+						#j = random.randint(0,len(self.origins[ip_dst][udp_dst]['udp'])-1)
+						actions = [parser.OFPActionSetField(udp_dst=int(surrogateSelect['port'])),parser.OFPActionSetField(ipv4_dst=surrogateSelect['surrogate']),parser.OFPActionOutput(out_port)]						
 						#actions = [parser.OFPActionSetField(udp_dst=int(surrogateSelect['port'])),parser.OFPActionSetField(ipv4_dst=surrogateSelect['surrogate']),parser.OFPActionOutput(out_port)]
 					else:
 						actions = [parser.OFPActionOutput(out_port)]
