@@ -346,10 +346,10 @@ class RAUSwitch(Host):
       ip = getIP(self.ips[i])
       mask = getNetmask(self.ips[i])
       self.cmd("ifconfig %s %s netmask %s up" %(interfaceName, ip, mask))
-      #self.cmd("sysctl -w net.ipv4.conf.%s.rp_filter=2" %(interfaceName))
+      self.cmd("sysctl -w net.ipv4.conf.%s.rp_filter=2" %(interfaceName))
       i = i + 1
-    #self.cmd("sysctl -w net.ipv4.conf.all.rp_filter=2")
-    #self.cmd("sysctl -p")
+    self.cmd("sysctl -w net.ipv4.conf.all.rp_filter=2")
+    self.cmd("sysctl -p")
       
     
     
